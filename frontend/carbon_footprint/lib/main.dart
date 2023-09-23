@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ResponsiveLayout(
-            mobileScaffold: HomePageMobile(),
+            mobileScaffold: FormPageMobile(),
             tabletScaffold: HomePageTablet(),
             desktopScaffold: HomePageDesktop(),
           );

@@ -2,8 +2,8 @@
 
 import 'package:carbon_footprint/NavigationSidebar.dart';
 import 'package:carbon_footprint/constants.dart';
-import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_box.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_tile.dart';
+import 'package:carbon_footprint/pages/Home/widgets/lineChart.dart';
 import 'package:flutter/material.dart';
 
 class HomePageMobile extends StatefulWidget {
@@ -23,17 +23,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
       body: Column(children: [
         AspectRatio(
           aspectRatio: 1,
-          child: SizedBox(
-            width: double.infinity,
-            child: GridView.builder(
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return UsefulBox();
-              },
-            ),
-          ),
+          child: CarbonUsageLineChart(),
         ),
         Expanded(
             child: ListView.builder(

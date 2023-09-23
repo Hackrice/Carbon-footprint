@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unnecessary_brace_in_string_interps
 
 import 'package:carbon_footprint/NavigationSidebar.dart';
 import 'package:carbon_footprint/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class FormPageMobile extends StatefulWidget {
   const FormPageMobile({Key? key}) : super(key: key);
@@ -92,25 +93,65 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
 class _FormPageMobileState extends State<FormPageMobile> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+
+  final List<bool> _selectedVehicleType = <bool>[true, false, false, false];
+  List<Widget> fruits = <Widget>[
+    Text(
+      'Hybrid',
+      style: TextStyle(
+        fontFamily: 'Rounded MPlus',
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    Text(
+      'Sedan',
+      style: TextStyle(
+        fontFamily: 'Rounded MPlus',
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    Text(
+      'SUV',
+      style: TextStyle(
+        fontFamily: 'Rounded MPlus',
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    Text(
+      'Truck',
+      style: TextStyle(
+        fontFamily: 'Rounded MPlus',
+        fontWeight: FontWeight.w600,
+      ),
+    )
+  ];
+
+  Map<int, dynamic> questionSet = {
+    1: {
+      'carType': 'Sedan',
+      'dayTimeDriven': '',
+      'dayMilesDriven': '',
+    },
+    2: {
+      'electricalUsage': '',
+    },
+    3: {
+      'dietType': '',
+    }
+  };
+
+  Map<String, String> fieldForm = {
+    'dayTimeDriven': '',
+    'dayMilesDriven': '',
+  };
+
+  double _currentSliderValue = 500;
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController milesFormController = TextEditingController();
-    final TextEditingController
+    final TextEditingController timeFormController = TextEditingController();
 
-        /// `timeFormController` is an instance of `TextEditingController` that
-        /// is used to control the text input in the "Daily Estimated Time
-        /// Driving" field of the form. It allows you to access and manipulate
-        /// the text entered in the field.
-        /// `timeFormController` is an instance of `TextEditingController` that
-        /// is used to control the text input in the "Daily Estimated Time
-        /// Driving" field of the form. It allows you to access and manipulate
-        /// the text entered in the field.
-
-        timeFormController = TextEditingController();
-    Map<String, String> fieldForm = {
-      'dayTimeDriven': '',
-      'dayMilesDriven': '',
-    };
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: rootAppbar,
@@ -140,6 +181,41 @@ class _FormPageMobileState extends State<FormPageMobile> {
                   padding: EdgeInsets.all(10),
                   child: Column(
                     children: [
+                      Container(
+                        // margin: EdgeInsets.only(left: 30, right: 30),
+                        child: Column(
+                          children: [
+                            Text('Vehicle Type'),
+                            const SizedBox(height: 5),
+                            ToggleButtons(
+                              direction: Axis.horizontal,
+                              onPressed: (int index) {
+                                setState(() {
+                                  // The button that is tapped is set to true, and the others to false.
+                                  for (int i = 0;
+                                      i < _selectedVehicleType.length;
+                                      i++) {
+                                    _selectedVehicleType[i] = i == index;
+                                  }
+                                });
+                              },
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              selectedBorderColor: Colors.grey[700],
+                              selectedColor: Colors.white,
+                              fillColor: Colors.green,
+                              color: Colors.black,
+                              constraints: const BoxConstraints(
+                                minHeight: 40.0,
+                                minWidth: 80.0,
+                              ),
+                              isSelected: _selectedVehicleType,
+                              children: fruits,
+                            ),
+                          ],
+                        ),
+                      ),
+
                       CustomFormField(
                           fieldFormData: fieldForm,
                           fieldController: milesFormController,
@@ -152,6 +228,29 @@ class _FormPageMobileState extends State<FormPageMobile> {
                           fieldLabel: 'Daily Estimated Time Driving',
                           fieldKey: 'dayTimeDriven',
                           labelUnit: 'Minutes'),
+
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Text(
+                          'Estimated Montly Electrical Usage: ${_currentSliderValue} KW/H',
+                          style: TextStyle(
+                              color: Colors.grey[900],
+                              fontFamily: 'Rounded MPlus',
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Slider(
+                        value: _currentSliderValue,
+                        max: 1000,
+                        min: 300,
+                        divisions: 20,
+                        label: _currentSliderValue.round().toString(),
+                        onChanged: (double value) {
+                          setState(() {
+                            _currentSliderValue = value;
+                          });
+                        },
+                      ),
                       Container(
                         margin: EdgeInsets.only(top: 10),
                         width: formWidth(context),
@@ -160,9 +259,17 @@ class _FormPageMobileState extends State<FormPageMobile> {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
-
-                              print(fieldForm);
                             }
+
+                            Map formData = {
+                              'carType': 'Sedan',
+                              'dayTimeDriven': '',
+                              'dayMilesDriven': '',
+                              'electricalUsage': '',
+                              'dietType': '',
+                            };
+
+                            // http.get(Uri.parse('uri?vehicleType=${}&dayTimeDriven=${}&dayMilesDriven=${}&electricalUsage=${}&dietType=${}'));
                           },
                           child: Text(
                             'Submit',

@@ -4,6 +4,7 @@ import 'package:carbon_footprint/NavigationSidebar.dart';
 import 'package:carbon_footprint/constants.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_box.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_tile.dart';
+import 'package:carbon_footprint/pages/Home/widgets/lineChart.dart';
 
 import 'package:flutter/material.dart';
 
@@ -26,20 +27,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
             Expanded(
               flex: 2,
               child: Column(children: [
-                AspectRatio(
-                  aspectRatio: 4,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return UsefulBox();
-                      },
-                    ),
-                  ),
-                ),
+                AspectRatio(aspectRatio: 4, child: CarbonUsageLineChart()),
                 Expanded(
                     child: ListView.builder(
                   itemCount: 5,
