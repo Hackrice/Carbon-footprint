@@ -15,11 +15,18 @@ class Item(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
+@app.get("/data/{state}")
+def read_state(state: str):
+    return {"state": state}
+
+@app.put("/form/{item_id}")
+def update_form(item_id: int, item: Item):
     return {"item_name": item.name, "item_id": item_id}
 
+@app.get("/footprint/personal/{user_id}")
+def read_personal(user_id: int):
+    return {"user_id": user_id}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/footprint/local/{user_id}")
+def read_local(user_id: int):
+    return {"user_id": user_id}
