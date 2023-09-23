@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357370558903",
+    "project_id": "hackrice-carbon-footprint",
+    "storage_bucket": "hackrice-carbon-footprint.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357370558903:android:5afc30effbc797ce531032",
+        "android_client_info": {
+          "package_name": "com.example.carbon_footprint"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfQdzn7m1t3JItMBNHXThzOKxjW3cn8Kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
