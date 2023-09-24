@@ -34,6 +34,14 @@ void main() async {
       'city': '',
     },
   );
+  // localStore.put(
+  //   'formData',
+  //   {
+  //     'email': '',
+  //     'state': '',
+  //     'city': '',
+  //   },
+  // );
 
   print('Init Store');
   var formData = await localStore.get('formData');

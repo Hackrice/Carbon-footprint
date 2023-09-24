@@ -24,7 +24,7 @@ class MessageSend extends StatelessWidget {
             // width: 300,
             // height: 100,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: const Color.fromARGB(255, 0, 140, 255),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -41,7 +41,10 @@ class MessageSend extends StatelessWidget {
                       width: 320,
                       child: Text(
                         message,
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
                         maxLines: 4,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -197,7 +200,7 @@ class _MobileChatPageState extends State<MobileChatPage> {
               ),
               NavigationDestination(
                 icon: Icon(Icons.commute),
-                label: 'Reduction Options',
+                label: 'Carbon Reduction',
               ),
               NavigationDestination(
                 icon: Icon(Icons.chat_outlined),
@@ -207,14 +210,15 @@ class _MobileChatPageState extends State<MobileChatPage> {
           ),
           backgroundColor: Colors.grey[300],
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 100,
+                height: MediaQuery.of(context).size.height * .09,
               ),
               Container(
                 padding: EdgeInsets.only(left: 10),
                 child: Text(
-                  'Carbonaid Personal Chat',
+                  'Carbon AI',
                   style: TextStyle(fontFamily: 'BebasNeue', fontSize: 40),
                 ),
               ),

@@ -27,7 +27,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
               child: Column(children: [
                 AspectRatio(
                   aspectRatio: 4,
-                  child: LocalCarbonUsageLineChart(),
+                  // child: LocalCarbonUsageLineChart(),
                 ),
                 Expanded(
                     child: ListView.builder(

@@ -42,6 +42,15 @@ dependencies:
   http: ^0.13.4
   location: ^4.2.0
   syncfusion_flutter_calendar: ^23.1.36
+  flutter_native_splash: ^2.2.4
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  #color: green
+  image: "frontend/carbon_footprint/assets/carbon_logo.png"
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

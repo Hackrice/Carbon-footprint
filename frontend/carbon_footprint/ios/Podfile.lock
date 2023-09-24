@@ -30,6 +30,8 @@ PODS:
     - Flutter
     - MapboxCoreNavigation (~> 2.11)
     - MapboxNavigation (~> 2.11)
+  - flutter_native_splash (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -91,6 +93,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_mapbox_navigation (from `.symlinks/plugins/flutter_mapbox_navigation/ios`)
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -129,6 +132,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_mapbox_navigation:
     :path: ".symlinks/plugins/flutter_mapbox_navigation/ios"
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   location:
@@ -146,6 +151,7 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 2f4bee5ed00301b5e56da0849268797a2dd31fb4
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_mapbox_navigation: 043dae117609883f693f08bdc283796eefb0de32
+  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72

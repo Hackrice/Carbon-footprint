@@ -130,7 +130,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
               ),
               NavigationDestination(
                 icon: Icon(Icons.commute),
-                label: 'Reduction Options',
+                label: 'Carbon Reduction',
               ),
               NavigationDestination(
                 icon: Icon(Icons.chat_outlined),
@@ -152,7 +152,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Carbon Footprint Usage',
+                      'Carbon Footprint',
                       style: TextStyle(fontFamily: 'BebasNeue', fontSize: 40),
                     ),
                     InkWell(
@@ -252,25 +252,26 @@ class _HomePageMobileState extends State<HomePageMobile> {
                         );
                       },
                       data: (data) {
-                        return LocalCarbonUsageLineChart(data);
+                        return LocalCarbonUsageLineChart();
                       },
                       error: (error, stackTrace) {
-                        return AspectRatio(
-                          aspectRatio: 1.70,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              right: 18,
-                              left: 12,
-                              top: 24,
-                              bottom: 12,
-                            ),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        );
+                        return LocalCarbonUsageLineChart();
+                        // return AspectRatio(
+                        //   aspectRatio: 1.70,
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.only(
+                        //       right: 18,
+                        //       left: 12,
+                        //       top: 24,
+                        //       bottom: 12,
+                        //     ),
+                        //     child: Center(
+                        //       child: CircularProgressIndicator(
+                        //         color: Colors.red,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // );
                       },
                     ),
                     Row(

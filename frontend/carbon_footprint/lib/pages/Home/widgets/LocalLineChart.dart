@@ -1,8 +1,37 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+Map<String, int> calculateMaxMin(List<dynamic> data) {
+  // Initializing max and min with the first entry
+  int max = int.parse(data[0][3]);
+  int min = int.parse(data[0][3]);
+
+  for (final entry in data) {
+    int value = int.parse(entry[3]);
+    if (value > max) max = value;
+    if (value < min) min = value;
+  }
+
+  return {'max': max, 'min': min};
+}
+
+List pointGenerator(List chartPoints) {
+  List points = [];
+  for (List point in chartPoints) {
+    final newPoint = FlSpot(double.parse(point[1]), double.parse(point[3]));
+    points.add(newPoint);
+  }
+
+  return points;
+}
+
 class LocalCarbonUsageLineChart extends StatefulWidget {
   const LocalCarbonUsageLineChart({super.key});
+
+// class LocalCarbonUsageLineChart extends StatefulWidget {
+//   const LocalCarbonUsageLineChart(this.chartPoints, {super.key});
+
+//   final List<dynamic> chartPoints;
 
   @override
   State<LocalCarbonUsageLineChart> createState() =>
@@ -48,24 +77,6 @@ class _LocalCarbonUsageLineChartState extends State<LocalCarbonUsageLineChart> {
             ),
           ),
         ),
-        // SizedBox(
-        //   width: 60,
-        //   height: 34,
-        //   child: TextButton(
-        //     onPressed: () {
-        //       setState(() {
-        //         showAvg = !showAvg;
-        //       });
-        //     },
-        //     child: Text(
-        //       'avg',
-        //       style: TextStyle(
-        //         fontSize: 12,
-        //         color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
