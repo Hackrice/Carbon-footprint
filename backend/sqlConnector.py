@@ -49,7 +49,7 @@ class sqlConnector:
         finally:
             # Close the cursor and connection
             cursor.close()
-            self.connection.close()
+            # self.connection.close()
         
         return {"status": 200}
 
@@ -76,7 +76,7 @@ class sqlConnector:
             if cursor:
                 cursor.close()
             if self.connection.is_connected():
-                self.connection.close()
+                # self.connection.close()
                 print("MySQL connection closed")
 
 
@@ -102,6 +102,6 @@ class sqlConnector:
             if cursor:
                 cursor.close()
             if self.connection.is_connected():
-                self.connection.close()
+                # self.connection.close()
                 print("MySQL connection closed")
 
