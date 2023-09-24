@@ -2,10 +2,10 @@ import mysql.connector
 
 class sqlConnector:
     def __init__(self):
-        self.host = "159.65.240.201" #159.65.240.201
+        self.host = "159.65.240.201"
         self.port = 3000
-        self.user = "eph"
-        self.password = "Password123!"
+        self.user = "seb"
+        self.password = "!hackrice23Ka"
         self.database = "dbo"
 
 

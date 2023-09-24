@@ -1,0 +1,6 @@
+version: "3.3"
+services:
+  langchainapi:
+    build: ./langchainAPI/
+    ports:
+      - 8082:8082

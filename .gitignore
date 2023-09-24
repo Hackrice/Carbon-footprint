@@ -3,3 +3,5 @@ config/
 
 myenv/
 backend/myenv/
+backend/venv/
+venv/
