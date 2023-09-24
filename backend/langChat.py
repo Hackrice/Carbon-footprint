@@ -5,7 +5,7 @@ from langchain.chains import LLMChain, SequentialChain
 
 class LangChainChat:
     def __init__(self, api_key):
-        os.environ['OPENAI_API_KEY'] = "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"
+        os.environ['OPENAI_API_KEY'] = api_key
         self.llm = OpenAI(temperature=0.9)
 
     def get_carbon_emission_suggestions(self, city, state):
@@ -54,6 +54,9 @@ class LangChainChat:
         )
         return chain({'city': city, 'state': state, "vehicle_type": vehicle_type, "commute_miles": commute_miles, "commute_time": commute_time})
 
+    def get_self_prompt(self, prompt):
+        data = self.llm.predict("I want to learn more about Carbon emission in Houston, TX")
+        return data
 
 
 # lc = LangChainChat("")

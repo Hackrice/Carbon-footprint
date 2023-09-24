@@ -21,7 +21,7 @@ class OptimizationRequest(BaseModel):
 
 app = FastAPI()
 
-lc = LangChainChat("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")
+lc = LangChainChat("your-api-key")
 sqlAPI = sqlConnector.sqlConnector()
 
 @app.post("/carbon_emission_suggestions")
@@ -39,6 +39,10 @@ def get_optimizations(request: OptimizationRequest):
 @app.post("/sequential_chain")
 def get_sequential_chain(request: PersonalData):
     return lc.get_sequential_chain(request.vehicle_type, request.commute_miles, request.commute_time, request.state, request.city)
+
+@app.post("/selfprompt")
+def get_self_prompt(prompt):
+    return lc.get_self_prompt(prompt)
 
 @app.post("/formdata")
 async def create_form_data(request: PersonalData):
