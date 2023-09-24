@@ -54,3 +54,54 @@ class sqlConnector:
         return {"status": 200}
 
 
+    def getCityYearEmissions(self, state, year):
+    
+        cursor = self.connection.cursor()
+
+        # Define the parameters for the stored procedure
+        params = (state, year)
+
+        # Call the stored procedure
+        cursor.callproc("GET_CityYearEmissions", params)
+        try:
+            for result in cursor.stored_results():
+                rows = result.fetchall()
+            return rows
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            # Close the cursor and connection
+            if cursor:
+                cursor.close()
+            if self.connection.is_connected():
+                self.connection.close()
+                print("MySQL connection closed")
+
+
+    def getCityMonthYearPercentile(self, month, year):
+
+        cursor = self.connection.cursor()
+
+        # Define the parameters for the stored procedure
+        params = (month, year)
+
+        # Call the stored procedure
+        cursor.callproc("GET_CityMonthYearPercentile", params)
+        try:
+            for result in cursor.stored_results():
+                rows = result.fetchall()
+            return rows
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+        finally:
+            # Close the cursor and connection
+            if cursor:
+                cursor.close()
+            if self.connection.is_connected():
+                self.connection.close()
+                print("MySQL connection closed")
+

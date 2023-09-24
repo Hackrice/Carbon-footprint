@@ -21,7 +21,7 @@ class OptimizationRequest(BaseModel):
 
 app = FastAPI()
 
-lc = LangChainChat("your-api-key")
+lc = LangChainChat("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")
 sqlAPI = sqlConnector.sqlConnector()
 
 @app.post("/carbon_emission_suggestions")
@@ -48,3 +48,11 @@ def get_self_prompt(prompt):
 async def create_form_data(request: PersonalData):
     return sqlAPI.insert_data(request.emailId,request.state,request.city,request.vehicle_type,request.commute_miles,request.commute_time, request.electrical_usage)
  
+
+@app.post("/getCityYearEmissions")
+def getCityYearEmissions(state, year):
+    return sqlAPI.getCityYearEmissions(state, year)
+
+@app.post('/getCityMonthYearPercentile')
+def getCityMonthYearPercentile(month, year):
+    return sqlAPI.getCityMonthYearPercentile(month, year)
