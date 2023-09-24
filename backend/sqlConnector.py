@@ -35,10 +35,7 @@ class sqlConnector:
         try:
             # Execute the insert query for each set of data
             # check statement
-            sqlConnector.insert_data(emailId=emailId, state=state, city=city, vehicle_type=vehicle_type, commute_miles=commute_miles, commute_time=commute_time, electrical_usage=electrical_usage)
-
             data = (emailId, state, city, vehicle_type, commute_miles, commute_time, electrical_usage)
-
             cursor.execute(insert_query, data)
 
             # Commit the changes to the database
@@ -53,5 +50,7 @@ class sqlConnector:
             # Close the cursor and connection
             cursor.close()
             self.connection.close()
+        
+        return {"status": 200}
 
 
