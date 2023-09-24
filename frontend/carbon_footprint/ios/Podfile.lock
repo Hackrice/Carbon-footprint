@@ -26,6 +26,10 @@ PODS:
   - FirebaseCoreInternal (10.15.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - Flutter (1.0.0)
+  - flutter_mapbox_navigation (0.1.9):
+    - Flutter
+    - MapboxCoreNavigation (~> 2.11)
+    - MapboxNavigation (~> 2.11)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -47,17 +51,46 @@ PODS:
   - GTMSessionFetcher/Core (3.1.1)
   - location (0.0.1):
     - Flutter
+  - MapboxCommon (23.8.0)
+  - MapboxCoreMaps (10.16.0):
+    - MapboxCommon (~> 23.8)
+  - MapboxCoreNavigation (2.16.0):
+    - MapboxDirections (~> 2.11.1)
+    - MapboxMobileEvents (~> 1.0)
+    - MapboxNavigationNative (~> 157.0.0)
+  - MapboxDirections (2.11.1):
+    - Polyline (~> 5.0)
+    - Turf (~> 2.6.1)
+  - MapboxMaps (10.16.0):
+    - MapboxCommon (= 23.8.0)
+    - MapboxCoreMaps (= 10.16.0)
+    - MapboxMobileEvents (= 1.0.10)
+    - Turf (~> 2.0)
+  - MapboxMobileEvents (1.0.10)
+  - MapboxNavigation (2.16.0):
+    - MapboxCoreNavigation (= 2.16.0)
+    - MapboxMaps (~> 10.16.0)
+    - MapboxMobileEvents (~> 1.0)
+    - MapboxSpeech (~> 2.0)
+    - Solar-dev (~> 3.0)
+  - MapboxNavigationNative (157.0.0):
+    - MapboxCommon (~> 23.8)
+  - MapboxSpeech (2.1.1)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - Polyline (5.1.0)
   - PromisesObjC (2.3.1)
   - RecaptchaInterop (100.0.0)
+  - Solar-dev (3.0.1)
   - Toast (4.0.0)
+  - Turf (2.6.1)
 
 DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_mapbox_navigation (from `.symlinks/plugins/flutter_mapbox_navigation/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -71,9 +104,21 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - GoogleUtilities
     - GTMSessionFetcher
+    - MapboxCommon
+    - MapboxCoreMaps
+    - MapboxCoreNavigation
+    - MapboxDirections
+    - MapboxMaps
+    - MapboxMobileEvents
+    - MapboxNavigation
+    - MapboxNavigationNative
+    - MapboxSpeech
+    - Polyline
     - PromisesObjC
     - RecaptchaInterop
+    - Solar-dev
     - Toast
+    - Turf
 
 EXTERNAL SOURCES:
   firebase_auth:
@@ -82,6 +127,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_mapbox_navigation:
+    :path: ".symlinks/plugins/flutter_mapbox_navigation/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   location:
@@ -98,14 +145,27 @@ SPEC CHECKSUMS:
   FirebaseCore: 2cec518b43635f96afe7ac3a9c513e47558abd2e
   FirebaseCoreInternal: 2f4bee5ed00301b5e56da0849268797a2dd31fb4
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_mapbox_navigation: 043dae117609883f693f08bdc283796eefb0de32
   fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  MapboxCommon: 8592a003eae487508461d452d62cfc5906a9682a
+  MapboxCoreMaps: faa14a797417dc32088c98019a3ce72e46cda5cd
+  MapboxCoreNavigation: 9414a9ba6681070f1186cca16c14d65d5663d700
+  MapboxDirections: 31d61b8369d5dde6f6828f72905ab9a7e054cd2c
+  MapboxMaps: f10aecadbfb7cf96368852ca313101eb4171da53
+  MapboxMobileEvents: de50b3a4de180dd129c326e09cd12c8adaaa46d6
+  MapboxNavigation: e781ce4c3b987180a0eb46145e3118c465eb8e92
+  MapboxNavigationNative: 2953310e4e05fcc3b335bdbeee861347272ac38f
+  MapboxSpeech: cd25ef99c3a3d2e0da72620ff558276ea5991a77
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  Polyline: 2a1f29f87f8d9b7de868940f4f76deb8c678a5b1
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
+  Solar-dev: 4612dc9878b9fed2667d23b327f1d4e54e16e8d0
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  Turf: 469ce2c3d22e5e8e4818d5a3b254699a5c89efa4
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
 
