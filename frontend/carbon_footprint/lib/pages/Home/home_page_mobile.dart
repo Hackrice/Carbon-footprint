@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
+
 import 'package:carbon_footprint/pages/ChatPage/mobileChatPage.dart';
 import 'package:carbon_footprint/pages/Home/home_page_desktop.dart';
 import 'package:carbon_footprint/pages/Home/home_page_tablet.dart';
@@ -10,6 +12,7 @@ import 'package:carbon_footprint/responsive/responsive_layout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
 class HomePageMobile extends StatefulWidget {
   const HomePageMobile({Key? key}) : super(key: key);
@@ -23,7 +26,40 @@ class _HomePageMobileState extends State<HomePageMobile> {
     (ref) => PageControlNotifier(),
   );
 
+  final getHomeCityYearEmissions = FutureProvider<List>(
+    (ref) async {
+      var extract;
+
+      final response = await http.post(Uri.parse(
+          'http://159.65.240.201:8080/getCityYearEmissions?city=Houston&year=2022'));
+      extract = jsonDecode(response.body);
+
+      return Future.value(extract);
+    },
+  );
+
+  final getHomeCityRanking = FutureProvider<List>(
+    (ref) async {
+      var extract;
+
+      final response = await http.post(Uri.parse(
+          'http://159.65.240.201:8080/getCityMonthYearPercentile?month=10&year=2023'));
+      extract = jsonDecode(response.body);
+
+      return Future.value(extract);
+    },
+  );
+
   int dataSelection = 0;
+
+  int findCityId(List<dynamic> data, String cityName) {
+    for (var item in data) {
+      if (item[1].toString().toLowerCase() == cityName.toLowerCase()) {
+        return item[0];
+      }
+    }
+    return 40; // return null if city is not found
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +68,9 @@ class _HomePageMobileState extends State<HomePageMobile> {
     int pageIndex = 0;
     return Consumer(
       builder: (context, ref, child) {
+        final cityYearEmissions = ref.watch(getHomeCityYearEmissions);
         final pageControlState = ref.watch(pageControlProvider);
+        final homeCityRanking = ref.watch(getHomeCityRanking);
         String userCity = 'Houston';
         String locationRank = '20';
         String localRank = '40%';
@@ -194,7 +232,47 @@ class _HomePageMobileState extends State<HomePageMobile> {
                         ],
                       ),
                     ),
-                    LocalCarbonUsageLineChart(),
+                    cityYearEmissions.when(
+                      loading: () {
+                        return AspectRatio(
+                          aspectRatio: 1.70,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              right: 18,
+                              left: 12,
+                              top: 24,
+                              bottom: 12,
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      data: (data) {
+                        return LocalCarbonUsageLineChart(data);
+                      },
+                      error: (error, stackTrace) {
+                        return AspectRatio(
+                          aspectRatio: 1.70,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              right: 18,
+                              left: 12,
+                              top: 24,
+                              bottom: 12,
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     Row(
                       children: [
                         InkWell(
@@ -291,48 +369,72 @@ class _HomePageMobileState extends State<HomePageMobile> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    padding: EdgeInsets.only(
-                                        top: 5, left: 5, right: 5, bottom: 5),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    width: 300,
-                                    height: 50,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Your City: ${userCity}',
-                                              style: TextStyle(
-                                                  color: Colors.grey[900],
-                                                  fontFamily: 'Rounded MPlus',
-                                                  fontWeight: FontWeight.w700),
+                                      margin: EdgeInsets.only(top: 10),
+                                      padding: EdgeInsets.only(
+                                          top: 5, left: 5, right: 5, bottom: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      width: 300,
+                                      height: 50,
+                                      child: homeCityRanking.when(
+                                        loading: () {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.blue,
                                             ),
-                                            Text(
-                                              'Ranked Top ${locationRank} in Carbon Usage',
-                                              style: TextStyle(
-                                                  color: Colors.grey[900],
-                                                  fontFamily: 'Rounded MPlus',
-                                                  fontWeight: FontWeight.w500),
+                                          );
+                                        },
+                                        error: (error, stackTrace) {
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.red,
                                             ),
-                                          ],
-                                        ),
-                                        Icon(Icons.trending_up_rounded,
-                                            size: 30, color: Colors.red),
-                                      ],
-                                    ),
-                                  ),
+                                          );
+                                        },
+                                        data: (data) {
+                                          final cityRank =
+                                              findCityId(data, userCity);
+                                          return Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Your City: ${userCity}',
+                                                    style: TextStyle(
+                                                        color: Colors.grey[900],
+                                                        fontFamily:
+                                                            'Rounded MPlus',
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                                  ),
+                                                  Text(
+                                                    'Ranked Top ${cityRank} in Carbon Usage',
+                                                    style: TextStyle(
+                                                        color: Colors.grey[900],
+                                                        fontFamily:
+                                                            'Rounded MPlus',
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ],
+                                              ),
+                                              Icon(Icons.trending_up_rounded,
+                                                  size: 30, color: Colors.red),
+                                            ],
+                                          );
+                                        },
+                                      )),
                                   Container(
                                     width: 80,
                                     height: 40,
