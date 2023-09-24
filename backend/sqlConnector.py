@@ -66,7 +66,7 @@ class sqlConnector:
         try:
             for result in cursor.stored_results():
                 rows = result.fetchall()
-            return rows
+                return rows
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -92,7 +92,7 @@ class sqlConnector:
         try:
             for result in cursor.stored_results():
                 rows = result.fetchall()
-            return rows
+                return rows
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
