@@ -7,6 +7,7 @@ import 'package:carbon_footprint/pages/Home/widgets/LocalLineChart.dart';
 import 'package:carbon_footprint/pages/NavigationPage/navigation_page.dart';
 import 'package:carbon_footprint/providers/pageControl.dart';
 import 'package:carbon_footprint/responsive/responsive_layout.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,6 +38,12 @@ class _HomePageMobileState extends State<HomePageMobile> {
         String localRank = '40%';
 
         return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/form');
+            },
+          ),
           bottomNavigationBar: NavigationBar(
             labelBehavior: labelBehavior,
             selectedIndex: pageIndex,
@@ -99,11 +106,69 @@ class _HomePageMobileState extends State<HomePageMobile> {
           body: Column(
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height * .06,
+                height: MediaQuery.of(context).size.height * .09,
               ),
-              Text(
-                'Carbon Footprint Usage',
-                style: TextStyle(fontFamily: 'BebasNeue', fontSize: 40),
+              Container(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Carbon Footprint Usage',
+                      style: TextStyle(fontFamily: 'BebasNeue', fontSize: 40),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              color: Colors.grey[200],
+                              width: 300,
+                              height: 300,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      setState(() {
+                                        FirebaseAuth.instance.signOut();
+                                      });
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(bottom: 40),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      width: 200,
+                                      height: 50,
+                                      child: Center(
+                                        child: Text(
+                                          'Logout',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.grey[900],
+                                              fontFamily: 'Rounded MPlus',
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Icon(
+                        Icons.settings,
+                        size: 30,
+                      ),
+                    )
+                  ],
+                ),
               ),
               Container(
                 decoration: BoxDecoration(

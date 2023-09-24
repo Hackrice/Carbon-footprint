@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unnecessary_brace_in_string_interps
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, unnecessary_brace_in_string_interps, no_leading_underscores_for_local_identifiers, avoid_print, unused_local_variable
 
-import 'package:carbon_footprint/NavigationSidebar.dart';
+import 'dart:convert';
+
 import 'package:carbon_footprint/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class FormPageMobile extends StatefulWidget {
@@ -93,8 +95,17 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
 class _FormPageMobileState extends State<FormPageMobile> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  int findTrueIndex(List<bool> list) {
+    return list.indexWhere((element) => element);
+  }
 
   final List<bool> _selectedVehicleType = <bool>[true, false, false, false];
+  final List<String> _selectedVehicleTitle = <String>[
+    'Hybrid',
+    'Sedan',
+    'SUV',
+    'Truck'
+  ];
   List<Widget> fruits = <Widget>[
     Text(
       'Hybrid',
@@ -152,10 +163,48 @@ class _FormPageMobileState extends State<FormPageMobile> {
     final TextEditingController milesFormController = TextEditingController();
     final TextEditingController timeFormController = TextEditingController();
 
+    Future<void> formRequest({
+      required String emailId,
+      required String state,
+      required String city,
+      required String vehicleType,
+      required int commuteMiles,
+      required int commuteTime,
+      required int electricalUsage,
+    }) async {
+      final String url = 'http://159.65.240.201:8080/formdata';
+      final Map<String, dynamic> body = {
+        "emailId": emailId,
+        "state": state,
+        "city": city,
+        "vehicle_type": vehicleType,
+        "commute_miles": commuteMiles,
+        "commute_time": commuteTime,
+        "electrical_usage": electricalUsage
+      };
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        // If server returns an OK response, parse the JSON.
+        final Map<String, dynamic> data = json.decode(response.body);
+        print('okay');
+      } else {
+        // If the server did not return a 200 OK response, throw an exception.
+        throw Exception('Failed to load data');
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: rootAppbar,
-      drawer: CustomDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -163,9 +212,9 @@ class _FormPageMobileState extends State<FormPageMobile> {
             padding: EdgeInsets.all(40),
             child: Text(
               textAlign: TextAlign.center,
-              'Before you continue to the next page please fill out the form to calculate your Carbon footprint value.',
+              'Please fill out the form to calculate your carbon footprint value.',
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 20,
                   color: Colors.grey[900],
                   fontFamily: 'Rounded MPlus',
                   fontWeight: FontWeight.bold),
@@ -215,7 +264,6 @@ class _FormPageMobileState extends State<FormPageMobile> {
                           ],
                         ),
                       ),
-
                       CustomFormField(
                           fieldFormData: fieldForm,
                           fieldController: milesFormController,
@@ -228,7 +276,6 @@ class _FormPageMobileState extends State<FormPageMobile> {
                           fieldLabel: 'Daily Estimated Time Driving',
                           fieldKey: 'dayTimeDriven',
                           labelUnit: 'Minutes'),
-
                       Container(
                         margin: EdgeInsets.only(top: 20),
                         child: Text(
@@ -256,7 +303,7 @@ class _FormPageMobileState extends State<FormPageMobile> {
                         width: formWidth(context),
                         decoration: boxDecorations,
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                             }
@@ -268,8 +315,28 @@ class _FormPageMobileState extends State<FormPageMobile> {
                               'electricalUsage': '',
                               'dietType': '',
                             };
+                            var cache = await Hive.box("local");
+                            final _formData = await cache.get('formData');
+                            print('_formData');
+                            print(_formData);
+                            final _city = _formData['city'];
+                            final _state = _formData['state'];
+                            final _email = _formData['email'];
+                            final _vehicleTitle = _selectedVehicleTitle[
+                                findTrueIndex(_selectedVehicleType)];
+                            final _commuteMiles =
+                                int.parse(milesFormController.text);
+                            final _commuteTime =
+                                int.parse(milesFormController.text);
 
-                            // http.get(Uri.parse('uri?vehicleType=${}&dayTimeDriven=${}&dayMilesDriven=${}&electricalUsage=${}&dietType=${}'));
+                            formRequest(
+                                vehicleType: _vehicleTitle,
+                                city: _city,
+                                state: _state,
+                                commuteMiles: _commuteMiles,
+                                commuteTime: _commuteTime,
+                                emailId: _email,
+                                electricalUsage: _currentSliderValue.toInt());
                           },
                           child: Text(
                             'Submit',
@@ -281,11 +348,6 @@ class _FormPageMobileState extends State<FormPageMobile> {
                           ),
                         ),
                       )
-                      // CustomFormField(
-                      //   fieldFormData: fieldForm,
-                      //   fieldController: milesFormController,
-                      //   fieldLabel: 'Daily Estimated Miles Commuted',
-                      // ),
                     ],
                   ),
                 ),

@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
-import 'package:carbon_footprint/NavigationSidebar.dart';
-import 'package:carbon_footprint/constants.dart';
-import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_box.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/widgets/useful_tile.dart';
 import 'package:carbon_footprint/pages/Home/widgets/LocalLineChart.dart';
-
+import 'package:carbon_footprint/NavigationSidebar.dart';
+import 'package:carbon_footprint/constants.dart';
 import 'package:flutter/material.dart';
 
 class HomePageDesktop extends StatefulWidget {
@@ -27,7 +25,10 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
             Expanded(
               flex: 2,
               child: Column(children: [
-                AspectRatio(aspectRatio: 4, child: LocalCarbonUsageLineChart()),
+                AspectRatio(
+                  aspectRatio: 4,
+                  child: LocalCarbonUsageLineChart(),
+                ),
                 Expanded(
                     child: ListView.builder(
                   itemCount: 5,

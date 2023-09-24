@@ -5,6 +5,7 @@ import 'package:carbon_footprint/providers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -41,7 +42,7 @@ class AuthPage extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Cool App',
+                        'CarbonAid',
                         style: TextStyle(
                           fontSize: 60,
                           fontFamily: 'BebasNeue',
@@ -83,6 +84,8 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
+  final _stateController = TextEditingController();
+  final _cityController = TextEditingController();
   final _emailController = TextEditingController();
   final _userIdController = TextEditingController();
 
@@ -168,66 +171,25 @@ class _AuthCardState extends State<AuthCard> {
       }
     }
 
-    return Center(
+    return Container(
+      height: _authMode == AuthMode.Signup ? 600 : 220,
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       child: Column(
         children: [
-          Card(
-            elevation: 0,
-            color: layerOneColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Container(
-              width: deviceType() == DeviceType.Mobile
-                  ? deviceSize.width * .75
-                  : deviceSize.width * .4,
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      if (_authMode == AuthMode.Signup)
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(top: 10),
-                          height: 50,
-                          width: formWidth(),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: TextFormField(
-                            controller: _userIdController,
-                            enabled: _authMode == AuthMode.Signup,
-                            cursorColor: Colors.grey[900],
-                            style: TextStyle(
-                                color: Colors.grey[900],
-                                fontFamily: 'Rounded MPlus',
-                                fontWeight: FontWeight.bold),
-                            decoration: const InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                labelText: 'Username',
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: 'Rounded MPlus',
-                                    fontWeight: FontWeight.bold)),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter a Username';
-                              } else {
-                                return null;
-                              }
-                            },
-                            onSaved: (value) {
-                              _authData['username'] = value!;
-                            },
-                          ),
-                        ),
+          Container(
+            width: deviceType() == DeviceType.Mobile
+                ? deviceSize.width * .75
+                : deviceSize.width * .4,
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    if (_authMode == AuthMode.Signup)
                       Container(
                         padding: EdgeInsets.all(10),
                         margin: EdgeInsets.only(top: 10),
@@ -238,7 +200,8 @@ class _AuthCardState extends State<AuthCard> {
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: TextFormField(
-                          controller: _emailController,
+                          controller: _userIdController,
+                          enabled: _authMode == AuthMode.Signup,
                           cursorColor: Colors.grey[900],
                           style: TextStyle(
                               color: Colors.grey[900],
@@ -250,24 +213,25 @@ class _AuthCardState extends State<AuthCard> {
                               ),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.never,
-                              labelText: 'E-Mail',
+                              labelText: 'Username',
                               labelStyle: TextStyle(
                                   color: Colors.grey,
                                   fontFamily: 'Rounded MPlus',
                                   fontWeight: FontWeight.bold)),
-                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value!.isEmpty || !value.contains('@')) {
-                              return 'Invalid email!';
+                            if (value!.isEmpty) {
+                              return 'Please enter a Username';
+                            } else {
+                              return null;
                             }
-                            return null;
-                            // return null;
                           },
                           onSaved: (value) {
-                            _authData['email'] = value!;
+                            _authData['username'] = value!;
                           },
                         ),
                       ),
+                    //! STATE INFORMATION
+                    if (_authMode == AuthMode.Signup)
                       Container(
                         padding: EdgeInsets.all(10),
                         margin: EdgeInsets.only(top: 10),
@@ -278,194 +242,323 @@ class _AuthCardState extends State<AuthCard> {
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: TextFormField(
+                          controller: _stateController,
+                          enabled: _authMode == AuthMode.Signup,
                           cursorColor: Colors.grey[900],
                           style: TextStyle(
                               color: Colors.grey[900],
                               fontFamily: 'Rounded MPlus',
                               fontWeight: FontWeight.bold),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.never,
-                              focusColor: Colors.grey[900],
-                              labelText: 'Password',
+                              labelText: 'State',
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: 'Rounded MPlus',
+                                  fontWeight: FontWeight.bold)),
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  if (value == '' || value!.isEmpty) {
+                                    fToast.showToast(
+                                      child: authToast(
+                                          'Please Fill a Value For The State! ',
+                                          true),
+                                      gravity: ToastGravity.BOTTOM,
+                                      toastDuration: Duration(seconds: 4),
+                                    );
+                                    return 'Please Fill a Value For The State!';
+                                  }
+                                  return null;
+                                }
+                              : null,
+                        ),
+                      ),
+                    if (_authMode == AuthMode.Signup)
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(top: 10),
+                        height: 50,
+                        width: formWidth(),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: TextFormField(
+                          controller: _cityController,
+                          enabled: _authMode == AuthMode.Signup,
+                          cursorColor: Colors.grey[900],
+                          style: TextStyle(
+                              color: Colors.grey[900],
+                              fontFamily: 'Rounded MPlus',
+                              fontWeight: FontWeight.bold),
+                          decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              labelText: 'City',
+                              labelStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: 'Rounded MPlus',
+                                  fontWeight: FontWeight.bold)),
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  if (value == '' || value!.isEmpty) {
+                                    fToast.showToast(
+                                      child: authToast(
+                                          'Please Fill a Value For The City!',
+                                          true),
+                                      gravity: ToastGravity.BOTTOM,
+                                      toastDuration: Duration(seconds: 4),
+                                    );
+                                    return 'Please Fill a Value For The City';
+                                  }
+                                  return null;
+                                }
+                              : null,
+                        ),
+                      ),
+
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(top: 10),
+                      height: 50,
+                      width: formWidth(),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        controller: _emailController,
+                        cursorColor: Colors.grey[900],
+                        style: TextStyle(
+                            color: Colors.grey[900],
+                            fontFamily: 'Rounded MPlus',
+                            fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            labelText: 'E-Mail',
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: 'Rounded MPlus',
+                                fontWeight: FontWeight.bold)),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty || !value.contains('@')) {
+                            return 'Invalid email!';
+                          }
+                          return null;
+                          // return null;
+                        },
+                        onSaved: (value) {
+                          _authData['email'] = value!;
+                        },
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(top: 10),
+                      height: 50,
+                      width: formWidth(),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        cursorColor: Colors.grey[900],
+                        style: TextStyle(
+                            color: Colors.grey[900],
+                            fontFamily: 'Rounded MPlus',
+                            fontWeight: FontWeight.bold),
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            focusColor: Colors.grey[900],
+                            labelText: 'Password',
+                            labelStyle: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: 'Rounded MPlus',
+                                fontWeight: FontWeight.bold)),
+                        obscureText: true,
+                        controller: _passwordController,
+                        validator: (value) {
+                          if (value!.isEmpty || value.length < 5) {
+                            return 'Password is too short!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _authData['password'] = value!;
+                        },
+                      ),
+                    ),
+                    if (_authMode == AuthMode.Signup)
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(top: 10),
+                        height: 50,
+                        width: formWidth(),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: TextFormField(
+                          controller: _passwordConfirmController,
+                          enabled: _authMode == AuthMode.Signup,
+                          cursorColor: Colors.grey[900],
+                          style: TextStyle(
+                              color: Colors.grey[900],
+                              fontFamily: 'Rounded MPlus',
+                              fontWeight: FontWeight.bold),
+                          decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              labelText: 'Confirm Password',
                               labelStyle: TextStyle(
                                   color: Colors.grey,
                                   fontFamily: 'Rounded MPlus',
                                   fontWeight: FontWeight.bold)),
                           obscureText: true,
-                          controller: _passwordController,
-                          validator: (value) {
-                            if (value!.isEmpty || value.length < 5) {
-                              return 'Password is too short!';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _authData['password'] = value!;
-                          },
-                        ),
-                      ),
-                      if (_authMode == AuthMode.Signup)
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(top: 10),
-                          height: 50,
-                          width: formWidth(),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: TextFormField(
-                            controller: _passwordConfirmController,
-                            enabled: _authMode == AuthMode.Signup,
-                            cursorColor: Colors.grey[900],
-                            style: TextStyle(
-                                color: Colors.grey[900],
-                                fontFamily: 'Rounded MPlus',
-                                fontWeight: FontWeight.bold),
-                            decoration: const InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                labelText: 'Confirm Password',
-                                labelStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: 'Rounded MPlus',
-                                    fontWeight: FontWeight.bold)),
-                            obscureText: true,
-                            validator: _authMode == AuthMode.Signup
-                                ? (value) {
-                                    if (value != _passwordController.text) {
-                                      fToast.showToast(
-                                        child: authToast(
-                                            'Passwords do not match!', true),
-                                        gravity: ToastGravity.BOTTOM,
-                                        toastDuration: Duration(seconds: 4),
-                                      );
-                                      return 'Passwords do not match!';
-                                    }
-                                    return null;
+                          validator: _authMode == AuthMode.Signup
+                              ? (value) {
+                                  if (value != _passwordController.text) {
+                                    fToast.showToast(
+                                      child: authToast(
+                                          'Passwords do not match!', true),
+                                      gravity: ToastGravity.BOTTOM,
+                                      toastDuration: Duration(seconds: 4),
+                                    );
+                                    return 'Passwords do not match!';
                                   }
-                                : null,
-                          ),
+                                  return null;
+                                }
+                              : null,
                         ),
-                      const SizedBox(
-                        height: 20,
                       ),
-                      if (_isLoading)
-                        const CircularProgressIndicator()
-                      else
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                              ),
-                              child: Text(
-                                _authMode == AuthMode.Login
-                                    ? 'Sign In'
-                                    : 'Register',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: 'Rounded MPlus',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              onPressed: _authMode == AuthMode.Login
-                                  ? () {
-                                      setState(
-                                        () {
-                                          widget.userProvider
-                                              .login(
-                                                  _emailController.text.trim(),
-                                                  _passwordController.text
-                                                      .trim())
-                                              .then(
-                                            (result) {
-                                              result['isError']
-                                                  ? fToast.showToast(
-                                                      child: authToast(
-                                                          result['message'],
-                                                          result['isError']),
-                                                      gravity:
-                                                          ToastGravity.BOTTOM,
-                                                      toastDuration:
-                                                          Duration(seconds: 4),
-                                                    )
-                                                  : print(result.runtimeType);
-                                              print(_emailController.text);
-                                              print(_passwordController.text);
-                                            },
-                                          );
-                                        },
-                                      );
-                                    }
-                                  : () {
-                                      setState(
-                                        () {
-                                          widget.userProvider
-                                              .signUp(
-                                                  _userIdController.text,
-                                                  _emailController.text,
-                                                  _passwordController.text,
-                                                  _passwordConfirmController
-                                                      .text)
-                                              .then(
-                                            (result) {
-                                              result['isError']
-                                                  ? fToast.showToast(
-                                                      child: authToast(
-                                                          result['message'],
-                                                          result['isError']),
-                                                      gravity:
-                                                          ToastGravity.BOTTOM,
-                                                      toastDuration:
-                                                          Duration(seconds: 4),
-                                                    )
-                                                  : print(result.runtimeType);
-                                              print(_emailController.text);
-                                              print(_passwordController.text);
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    if (_isLoading)
+                      const CircularProgressIndicator()
+                    else
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white),
                             ),
-                            SizedBox(
-                              width: 20,
+                            child: Text(
+                              _authMode == AuthMode.Login
+                                  ? 'Sign In'
+                                  : 'Register',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Rounded MPlus',
+                                  fontWeight: FontWeight.bold),
                             ),
-                            TextButton(
-                              child: Text(
-                                '${_authMode == AuthMode.Login ? 'Register' : 'Sign In'}',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: 'Rounded MPlus',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              onPressed: _switchAuthMode,
+                            onPressed: _authMode == AuthMode.Login
+                                ? () {
+                                    setState(
+                                      () {
+                                        widget.userProvider
+                                            .login(_emailController.text.trim(),
+                                                _passwordController.text.trim())
+                                            .then(
+                                          (result) {
+                                            result['isError']
+                                                ? fToast.showToast(
+                                                    child: authToast(
+                                                        result['message'],
+                                                        result['isError']),
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    toastDuration:
+                                                        Duration(seconds: 4),
+                                                  )
+                                                : print(result.runtimeType);
+                                            print(_emailController.text);
+                                            print(_passwordController.text);
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                : () {
+                                    setState(
+                                      () {
+                                        widget.userProvider
+                                            .signUp(
+                                                _userIdController.text,
+                                                _emailController.text,
+                                                _passwordController.text,
+                                                _passwordConfirmController.text)
+                                            .then(
+                                          (result) async {
+                                            // if (result['isError']) {
+                                            //   fToast.showToast(
+                                            //     child: authToast(
+                                            //         result['message'],
+                                            //         result['isError']),
+                                            //     gravity: ToastGravity.BOTTOM,
+                                            //     toastDuration:
+                                            //         Duration(seconds: 4),
+                                            //   );
+                                            // }
+                                            var lazyBox = Hive.box('local');
+
+                                            print('LOCAL STORE AFTER AUTH ');
+                                            print(
+                                                await lazyBox.get('formData'));
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          TextButton(
+                            child: Text(
+                              '${_authMode == AuthMode.Login ? 'Register' : 'Sign In'}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Rounded MPlus',
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ],
-                        ),
-                    ],
-                  ),
+                            onPressed: _switchAuthMode,
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
             ),
           ),
-          TextButton(
-              onPressed: () {
-                widget.userProvider.anonLogin();
-              },
-              child: Text(
-                'Sign in as Guest',
-                style: TextStyle(color: Colors.grey[600]),
-              ))
+          // TextButton(
+          //   onPressed: () {
+          //     widget.userProvider.anonLogin();
+          //   },
+          //   child: Text(
+          //     'Sign in as Guest',
+          //     style: TextStyle(color: Colors.grey[600]),
+          //   ),
+          // )
         ],
       ),
     );
