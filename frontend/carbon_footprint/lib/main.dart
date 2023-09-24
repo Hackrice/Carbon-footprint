@@ -1,19 +1,18 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:carbon_footprint/Auth/AuthPage.dart';
-import 'package:carbon_footprint/pages/CalanderPage/calanderPage.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/desktop_scaffold.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/mobile_scaffold.dart';
 import 'package:carbon_footprint/pages/ExampleStrucutre/tablet_scaffold.dart';
 import 'package:carbon_footprint/pages/FormPage/form_page_mobile.dart';
 import 'package:carbon_footprint/pages/Home/home_page_desktop.dart';
+import 'package:carbon_footprint/responsive/responsive_layout.dart';
 import 'package:carbon_footprint/pages/Home/home_page_mobile.dart';
 import 'package:carbon_footprint/pages/Home/home_page_tablet.dart';
-import 'package:carbon_footprint/responsive/responsive_layout.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:carbon_footprint/Auth/AuthPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -25,6 +24,20 @@ void main() async {
   // Setup hive local db
   await Hive.initFlutter();
   await Hive.openBox("local");
+
+  var localStore = Hive.box("local");
+  localStore.put(
+    'formData',
+    {
+      'email': '',
+      'state': '',
+      'city': '',
+    },
+  );
+
+  print('Init Store');
+  var formData = await localStore.get('formData');
+  print(formData);
 
   runApp(
     const ProviderScope(
@@ -61,6 +74,11 @@ class MyApp extends StatelessWidget {
         '/auth': (BuildContext context) => AuthPage(),
         '/home': (BuildContext context) => ResponsiveLayout(
               mobileScaffold: HomePageMobile(),
+              tabletScaffold: HomePageTablet(),
+              desktopScaffold: HomePageDesktop(),
+            ),
+        '/form': (BuildContext context) => ResponsiveLayout(
+              mobileScaffold: FormPageMobile(),
               tabletScaffold: HomePageTablet(),
               desktopScaffold: HomePageDesktop(),
             ),
