@@ -5,7 +5,7 @@ from langchain.chains import LLMChain, SequentialChain
 
 class LangChainChat:
     def __init__(self, api_key):
-        os.environ['OPENAI_API_KEY'] = api_key
+        os.environ['OPENAI_API_KEY'] = "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"
         self.llm = OpenAI(temperature=0.9)
 
     def get_carbon_emission_suggestions(self, city, state):
@@ -33,6 +33,18 @@ class LangChainChat:
         return self.llm.predict(p)
 
     def get_sequential_chain(self, vehicle_type, commute_miles, commute_time, state, city):
+
+        prompt_template_personal_data = PromptTemplate(
+            input_variables=['vehicle_type', 'commute_miles', 'commute_time', 'state', 'city'],
+            template="""An individual, who lives in {city}, {state}, drives a vehicle type of {vehicle_type}, and drives on average of {commute_miles} miles per day with a average commute time of {commute_time} minutes per day. Provide 5 suggestions in a few words on how to reduce carbon emissions, in JSON structure."""
+        )
+
+        prompt_further_personal_optimization = PromptTemplate(
+            input_variables=['personal_data_suggestions'],
+            template="Given these recommendations to reduce carbon footprint: {personal_data_suggestions}, estimate the optimizations of how much person can save with numbers.Provide how much carbon footprint it will reduce numerically."
+        )
+
+
         personal_chain = LLMChain(llm=self.llm, prompt=prompt_template_personal_data, output_key="personal_data_suggestions")
         optimization_chain = LLMChain(llm=self.llm, prompt=prompt_further_personal_optimization, output_key="optimizations")
         chain = SequentialChain(

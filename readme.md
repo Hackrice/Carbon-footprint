@@ -11,7 +11,7 @@
 
 
 ```
-Go into the rest_api folder
+Go into the backend folder
 
 Run the server with:
     
