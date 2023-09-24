@@ -2,7 +2,7 @@ import mysql.connector
 
 class sqlConnector:
     def __init__(self):
-        self.host = "159.65.240.201"
+        self.host = "159.65.240.201" #159.65.240.201
         self.port = 3000
         self.user = "eph"
         self.password = "Password123!"
@@ -25,17 +25,19 @@ class sqlConnector:
             print(f"Error: {err}")
 
 
-    def insert_data(self, vehicle_type, commute_miles, commute_time, electrical_usage, state, city):
+    def insert_data(self, emailId, state, city, vehicle_type, commute_miles, commute_time, electrical_usage):
         cursor = self.connection.cursor()
 
 
-                # SQL query to insert data into the table
-        insert_query = "INSERT INTO your_table_name (vehicle_type, commute_miles, commute_time, electrical_usage, state, city) VALUES (%s, %s, %s, %s, %s, %s)"
+         # SQL query to insert data into the table
+        insert_query = "INSERT INTO CustomerDataForm ( Email_ID, State, City, Vehicle_Type, Commute_Miles, Commute_Time, Electrical_Usage) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 
         try:
             # Execute the insert query for each set of data
             # check statement
-            data = (vehicle_type, commute_miles, commute_time, electrical_usage, state, city)
+            sqlConnector.insert_data(emailId=emailId, state=state, city=city, vehicle_type=vehicle_type, commute_miles=commute_miles, commute_time=commute_time, electrical_usage=electrical_usage)
+
+            data = (emailId, state, city, vehicle_type, commute_miles, commute_time, electrical_usage)
 
             cursor.execute(insert_query, data)
 

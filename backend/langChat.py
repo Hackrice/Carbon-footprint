@@ -5,7 +5,7 @@ from langchain.chains import LLMChain, SequentialChain
 
 class LangChainChat:
     def __init__(self, api_key):
-        os.environ['OPENAI_API_KEY'] = "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"
+        os.environ['OPENAI_API_KEY'] = "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"
         self.llm = OpenAI(temperature=0.9)
 
     def get_carbon_emission_suggestions(self, city, state):
@@ -56,8 +56,8 @@ class LangChainChat:
 
 
 
-lc = LangChainChat("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")
-print(lc.get_carbon_emission_suggestions("Houston", "Texas"))
-print(lc.get_personal_data_suggestions("sedan", "30", "50", "Texas", "Houston"))
-print(lc.get_optimizations("Carpool, Use public transportation, Drive a hybrid vehicle, Reduce driving speed, Reduce vehicle idling"))
-print(lc.get_sequential_chain("sedan", "30", "50", "Texas", "Houston"))
+# lc = LangChainChat("")
+# print(lc.get_carbon_emission_suggestions("Houston", "Texas"))
+# print(lc.get_personal_data_suggestions("sedan", "30", "50", "Texas", "Houston"))
+# print(lc.get_optimizations("Carpool, Use public transportation, Drive a hybrid vehicle, Reduce driving speed, Reduce vehicle idling"))
+# print(lc.get_sequential_chain("sedan", "30", "50", "Texas", "Houston"))
