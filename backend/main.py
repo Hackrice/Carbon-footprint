@@ -50,7 +50,7 @@ async def create_form_data(request: PersonalData):
  
 
 @app.post("/getCityYearEmissions")
-def getCityYearEmissions(state, year):
+def getCityYearEmissions(city, year):
     return sqlAPI.getCityYearEmissions(state, year)
 
 @app.post('/getCityMonthYearPercentile')

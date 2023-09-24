@@ -54,12 +54,12 @@ class sqlConnector:
         return {"status": 200}
 
 
-    def getCityYearEmissions(self, state, year):
+    def getCityYearEmissions(self, city, year):
     
         cursor = self.connection.cursor()
 
         # Define the parameters for the stored procedure
-        params = (state, year)
+        params = (city, year)
 
         # Call the stored procedure
         cursor.callproc("GET_CityYearEmissions", params)
