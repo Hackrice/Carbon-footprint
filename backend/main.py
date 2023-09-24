@@ -21,7 +21,7 @@ class OptimizationRequest(BaseModel):
 
 app = FastAPI()
 
-lc = LangChainChat("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")
+lc = LangChainChat("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")
 sqlAPI = sqlConnector.sqlConnector()
 
 @app.post("/carbon_emission_suggestions")
@@ -48,7 +48,6 @@ def get_self_prompt(prompt):
 async def create_form_data(request: PersonalData):
     return sqlAPI.insert_data(request.emailId,request.state,request.city,request.vehicle_type,request.commute_miles,request.commute_time, request.electrical_usage)
  
-
 @app.post("/getCityYearEmissions")
 def getCityYearEmissions(city, year):
     return sqlAPI.getCityYearEmissions(city, year)
@@ -56,3 +55,7 @@ def getCityYearEmissions(city, year):
 @app.post('/getCityMonthYearPercentile')
 def getCityMonthYearPercentile(month, year):
     return sqlAPI.getCityMonthYearPercentile(month, year)
+
+@app.get('/getPersonalCarbonFootprint')
+def getPersonalCarbonFootprint(vehicle_type: str, distance: float):
+    return sqlAPI.getPersonalCarbonFootprint(vehicle_type, distance)

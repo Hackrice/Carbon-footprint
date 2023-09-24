@@ -1,4 +1,5 @@
 import mysql.connector
+import calendar
 
 class sqlConnector:
     def __init__(self):
@@ -66,7 +67,12 @@ class sqlConnector:
         try:
             for result in cursor.stored_results():
                 rows = result.fetchall()
-                return rows
+                # Transform rows into a single dictionary
+                emissions_data = {
+                    calendar.month_abbr[int(row[1])]: row[3]
+                    for row in rows
+                }
+                return emissions_data
 
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -104,4 +110,22 @@ class sqlConnector:
             if self.connection.is_connected():
                 # self.connection.close()
                 print("MySQL connection closed")
+
+    def getPersonalCarbonFootprint(self, vehicle_type, distance):
+
+        mpg = 0
+
+        if vehicle_type == 'suv':
+            mpg = 30
+        elif vehicle_type == 'sedan':
+            mpg = 50
+        elif vehicle_type == 'truck':
+            mpg = 25
+        elif vehicle_type == 'hybrid':
+            mpg = 60
+
+        distance = float(distance)
+
+        #return carbon emission
+        return((distance / mpg) * 19.6)
 

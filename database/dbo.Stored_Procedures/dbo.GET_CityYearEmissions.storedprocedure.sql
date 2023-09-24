@@ -1,0 +1,17 @@
+DROP PROCEDURE IF EXISTS GET_CityYearEmissions;
+
+DELIMITER $$
+
+CREATE PROCEDURE GET_CityYearEmissions(
+    IN ARG_City VARCHAR(30),
+    IN ARG_Year INT
+)
+BEGIN
+    SELECT Month, Year
+	FROM State_CO2_Emissions CO2
+	WHERE CO2.YEAR = ARG_Year
+	AND CO2.City = ARG_City
+	ORDER BY CAST(Month AS UNSIGNED) ASC;
+END$$
+
+DELIMITER ;
